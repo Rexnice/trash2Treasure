@@ -10,8 +10,21 @@ import uuid
 from models import db, User, WasteItem, PickupRequest, Reward
 from config import Config
 
+
 app = Flask(__name__)
 app.config.from_object(Config)
+
+
+
+
+# For Render deployment
+if 'RENDER' in os.environ:
+    # Use PostgreSQL on Render
+    db_url = os.environ.get('DATABASE_URL')
+    if db_url and db_url.startswith('postgres://'):
+        db_url = db_url.replace('postgres://', 'postgresql://', 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+
 
 # Initialize extensions
 db.init_app(app)
