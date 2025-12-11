@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Trash2Treasure{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>Welcome, {{ current_user.name }}!</h1>
+    <p>{{ "Household Dashboard" if current_user.user_type == 'household' else "Recycling Company Dashboard" }}</p>
+</div>
+
+{% if current_user.user_type == 'household' %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>Total Points</h3>
+        <p class="stat-number" data-stat="total_points">0</p>
+    </div>
+    <div class="stat-card">
+        <h3>Waste Recycled</h3>
+        <p class="stat-number" data-stat="total_waste">0kg</p>
+    </div>
+    <div class="stat-card">
+        <h3>Items Recycled</h3>
+        <p class="stat-number" data-stat="items_recycled">0</p>
+    </div>
+</div>
+
+<div class="dashboard-grid">
+    <div class="dashboard-card">
+        <h3><i class="fas fa-history"></i> Recent Waste Items</h3>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Weight</th>
+                        <th>Points</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in waste_items %}
+                    <tr>
+                        <td>{{ item.waste_type }}</td>
+                        <td>{{ item.weight_kg }}kg</td>
+                        <td>{{ item.points_earned }}</td>
+                        <td><span class="status-badge status-{{ item.status }}">{{ item.status }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <h3><i class="fas fa-truck"></i> Upcoming Pickups</h3>
+        {% if upcoming_pickups %}
+            {% for pickup in upcoming_pickups %}
+            <div class="pickup-item">
+                <p><strong>{{ pickup.scheduled_date.strftime('%Y-%m-%d %H:%M') }}</strong></p>
+                <p>{{ pickup.waste_item.waste_type }} - {{ pickup.waste_item.weight_kg }}kg</p>
+                <span class="status-badge status-{{ pickup.status }}">{{ pickup.status }}</span>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No upcoming pickups scheduled.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="quick-actions">
+    <a href="{{ url_for('scan') }}" class="btn btn-primary">
+        <i class="fas fa-camera"></i> Scan New Waste
+    </a>
+    <a href="{{ url_for('schedule_pickup') }}" class="btn btn-secondary">
+        <i class="fas fa-calendar-alt"></i> Schedule Pickup
+    </a>
+</div>
+
+{% else %}
+<!-- Company Dashboard -->
+<div class="dashboard-grid">
+    <div class="dashboard-card">
+        <h3><i class="fas fa-clock"></i> Pending Pickup Requests</h3>
+        {% if pending_pickups %}
+            {% for pickup in pending_pickups %}
+            <div class="pickup-request">
+                <p><strong>Pickup ID:</strong> {{ pickup.id[:8] }}</p>
+                <p><strong>Date:</strong> {{ pickup.scheduled_date.strftime('%Y-%m-%d %H:%M') }}</p>
+                <p><strong>Address:</strong> {{ pickup.address }}</p>
+                <button class="btn btn-small update-status-btn" 
+                        data-id="{{ pickup.id }}"
+                        data-status="{{ pickup.status }}">
+                    Update Status
+                </button>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No pending pickup requests.</p>
+        {% endif %}
+    </div>
+
+    <div class="dashboard-card">
+        <h3><i class="fas fa-calendar-check"></i> Scheduled Pickups</h3>
+        {% if scheduled_pickups %}
+            {% for pickup in scheduled_pickups %}
+            <div class="pickup-request">
+                <p><strong>Pickup ID:</strong> {{ pickup.id[:8] }}</p>
+                <p><strong>Date:</strong> {{ pickup.scheduled_date.strftime('%Y-%m-%d %H:%M') }}</p>
+                <p><strong>Status:</strong> 
+                    <span class="status-badge status-{{ pickup.status }}">{{ pickup.status }}</span>
+                </p>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No scheduled pickups.</p>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<div class="user-stats" style="display: none;"></div>
+{% endblock %}

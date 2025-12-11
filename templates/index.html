@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Trash2Treasure{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-content">
+        <h1>Turn Your <span class="highlight">Trash</span> Into <span class="highlight">Treasure</span></h1>
+        <p>Connect with recycling companies, earn rewards, and contribute to a cleaner planet.</p>
+        <div class="hero-buttons">
+            {% if not current_user.is_authenticated %}
+                <a href="{{ url_for('register') }}" class="btn btn-primary">Get Started</a>
+                <a href="{{ url_for('login') }}" class="btn btn-secondary">Login</a>
+            {% else %}
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="hero-image">
+        <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Recycling Illustration">
+    </div>
+</section>
+
+<section class="features">
+    <h2>How It Works</h2>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-camera"></i>
+            </div>
+            <h3>1. Scan Waste</h3>
+            <p>Take a photo of your recyclable waste using our mobile app</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <h3>2. Schedule Pickup</h3>
+            <p>Choose a convenient time for waste collection</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-truck"></i>
+            </div>
+            <h3>3. Get Collected</h3>
+            <p>Recycling company picks up your waste from your doorstep</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-gift"></i>
+            </div>
+            <h3>4. Earn Rewards</h3>
+            <p>Receive points and incentives for your recycling efforts</p>
+        </div>
+    </div>
+</section>
+
+<section class="stats">
+    <div class="stat-item">
+        <h3>500+</h3>
+        <p>Households Joined</p>
+    </div>
+    <div class="stat-item">
+        <h3>2,500kg</h3>
+        <p>Waste Recycled</p>
+    </div>
+    <div class="stat-item">
+        <h3>50+</h3>
+        <p>Recycling Partners</p>
+    </div>
+    <div class="stat-item">
+        <h3>25,000+</h3>
+        <p>Points Awarded</p>
+    </div>
+</section>
+
+<section class="cta">
+    <h2>Ready to Make a Difference?</h2>
+    <p>Join our community of eco-conscious individuals and businesses</p>
+    <a href="{{ url_for('register') }}" class="btn btn-large">Start Recycling Today</a>
+</section>
+{% endblock %}
